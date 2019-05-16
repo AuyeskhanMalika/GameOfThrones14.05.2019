@@ -15,7 +15,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-
+using static GameOfThrones.GetAllGotCharacters;
+using Gecko;
 
 namespace GameOfThrones
 {
@@ -24,23 +25,53 @@ namespace GameOfThrones
     /// </summary>
     public partial class MainWindow : Window
     {
-        List<GotCharacters> _gotCharacters;
+        private List<GotCharacters> gotCharacters;
         public MainWindow()
         {
             InitializeComponent();
-            string result = string.Empty;
-            using (var client = new WebClient())
-            {
-                result = client.DownloadString(ConfigurationManager.AppSettings["GotCharactersDownloadString"]);
-            }
-            _gotCharacters = JsonConvert.DeserializeObject<List<GotCharacters>>(result);
-            _gotCharacters.ForEach(character => charactersListBox.Items.Add(character));
+            //gotCharacters = GetAllGotCharacters.GetListOfGotCharacters();
+            //var characterName = gotCharacters.Select(c => c.Name);
+            //charactersListBox.ItemsSource = characterName;
         }
 
         private void charactersListMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            var selectedCharacterName = charactersListBox.SelectedItem.ToString();
+            int counter = 0;
+            foreach (var item in gotCharacters)
+            {
+                if (counter == charactersListBox.SelectedIndex)
+                {
+                    Characters characterInfo = new Characters(item);
+                    characterInfo.Show();
+                    return;
+                }
+                counter++;
+            }
+        }
+        public static List<GotCharacters> GetListOfGotCharacters()
+        {
+            return JsonConvert.DeserializeObject<List<GotCharacters>>(Downloader.DataJsonFormat(ConfigurationManager.AppSettings["urlString"]));
         }
 
+        private void characterNameTextBoxTextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (characterNameTextBox is null)
+            {
+                characterNameTextBox.Text = "";
+            }
+            int index = 0;
+            foreach (var person in gotCharacters)
+            {
+                if (person.Name.Contains(characterNameTextBox.Text))
+                {
+                    charactersListBox.Items[index] = person;
+                }
+                else
+                {
+                    charactersListBox.Items[index] = new EmptyObject();
+                }
+                index++;
+            }
+        }
     }
 }

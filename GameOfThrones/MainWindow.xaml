@@ -5,14 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GameOfThrones"
         xmlns:col="clr-namespace:System.Collections;assembly=mscorlib"
+        xmlns:cefSharp="clr-namespace:CefSharp.Wpf;assembly=CefSharp.Wpf"
         mc:Ignorable="d"
-         Title="MainWindow" Height="740" Width="850" WindowStyle="SingleBorderWindow"  ResizeMode="NoResize">
+        Title="MainWindow" Height="740" Width="850"  ResizeMode="CanResize" >
     <StackPanel Margin="0,0,-6,-3">
-        <Grid  Height="90" VerticalAlignment="Top" >
+        <Grid  Height="90" VerticalAlignment="Top" Background="Black">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 3 0"/>
-            <TextBlock Text="Game Of Thrones" HorizontalAlignment="Center" VerticalAlignment="Top"  Foreground="DarkRed"  FontSize="50" FontWeight="ExtraBlack"/>
+            <TextBlock Text="Game Of Thrones" HorizontalAlignment="Center" VerticalAlignment="Top"  Foreground="Red"  FontSize="50" FontWeight="ExtraBlack"/>
         </Grid>
-        <Grid Height="498">
+        <Grid Height="498" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="25*"/>
                 <ColumnDefinition Width="75*"/>
@@ -25,16 +26,17 @@
             </Grid.RowDefinitions>
 
             <TextBox Grid.Column="0" Grid.Row="0" Name="characterNameTextBox" TextWrapping="Wrap" ToolTip="Enter a name of character" 
-                     FontSize="18" Background="#FF212427" Foreground="White" Margin="-5,0,5,0"/>
+                     FontSize="18" Background="#FF212427" Foreground="White" Margin="-5,0,5,0" TextChanged="characterNameTextBoxTextChanged"/>
 
             <ListBox Name="charactersListBox" Grid.Column="0" Background="#FF212427" Foreground="White" 
-                     ItemsSource="{DynamicResource ResourceKey=GotCharacters}" Margin="-5,0,5,0" Grid.Row="1">
+                     ItemsSource="{DynamicResource ResourceKey=GotCharacters}" Margin="-5,0,5,0" Grid.Row="1" 
+                     MouseDoubleClick="charactersListMouseDoubleClick">
                 <ListBox.Resources>
                     <col:ArrayList x:Key="GotCharacters"></col:ArrayList>
                 </ListBox.Resources>
             </ListBox>
-            <WebBrowser Source="http://viewers-guide.hbo.com/game-of-thrones/season-8/episode-5/map" 
-                        Grid.RowSpan="2" Grid.ColumnSpan="2" Margin="195,0,5,0"/>
+            <cefSharp:ChromiumWebBrowser Grid.Column="1" Grid.RowSpan="2" 
+                                         Address="http://viewers-guide.hbo.com/game-of-thrones/season-8/episode-4/map/location/18/dragonstone"/>
         </Grid>
     </StackPanel>
 </Window>
