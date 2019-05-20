@@ -25,7 +25,6 @@ namespace GameOfThrones
     /// </summary>
     public partial class MainWindow : Window
     {
-        private List<GotCharacters> gotCharacters;
         public MainWindow()
         {
             InitializeComponent();
@@ -55,9 +54,9 @@ namespace GameOfThrones
 
         private void characterNameTextBoxTextChanged(object sender, TextChangedEventArgs e)
         {
-            if (characterNameTextBox is null)
+            if (findCharacterNameTextBox is null)
             {
-                characterNameTextBox.Text = "";
+                findCharacterNameTextBox.Text = "";
             }
             int index = 0;
             foreach (var person in gotCharacters)
@@ -68,7 +67,7 @@ namespace GameOfThrones
                 }
                 else
                 {
-                    charactersListBox.Items[index] = new EmptyObject();
+                    charactersListBox.Items[index] = new EmptySpaces();
                 }
                 index++;
             }
