@@ -9,25 +9,21 @@ using System.Threading.Tasks;
 
 namespace GameOfThrones
 {
-    public class GetAllGotCharacters
+    public static class Downloader
     {
-        public void GetPeople()
+        public static string DataJsonFormat(string url)
         {
-            string json = "";
-            WebClient client = new WebClient();
-            using (Stream stream = client.OpenRead(_url))
+            using (var client = new WebClient())
             {
-                using (StreamReader reader = new StreamReader(stream))
+                try
                 {
-                    string line = "";
-                    while ((line = reader.ReadLine()) != null)
-                    {
-                        json += line;
-                    }
+                    return client.DownloadString(url);
+                }
+                catch (WebException exception)
+                {
+                    return exception.Message;
                 }
             }
-
-            _people = JsonConvert.DeserializeObject<List<Person>>(json);
         }
     }
 }

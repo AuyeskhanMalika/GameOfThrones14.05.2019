@@ -15,7 +15,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using static GameOfThrones.GetAllGotCharacters;
 using Gecko;
 
 namespace GameOfThrones
@@ -25,52 +24,31 @@ namespace GameOfThrones
     /// </summary>
     public partial class MainWindow : Window
     {
+        private List<GotCharacters> gotCharacters;
         public MainWindow()
         {
             InitializeComponent();
-            //gotCharacters = GetAllGotCharacters.GetListOfGotCharacters();
-            //var characterName = gotCharacters.Select(c => c.Name);
-            //charactersListBox.ItemsSource = characterName;
+            gotCharacters = GetDataService.GetListOfGotCharacters();
+            var characterName = gotCharacters.Select(c => c.Name);
+            charactersListBox.ItemsSource = characterName;
         }
 
         private void charactersListMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            int counter = 0;
-            foreach (var item in gotCharacters)
-            {
-                if (counter == charactersListBox.SelectedIndex)
-                {
-                    Characters characterInfo = new Characters(item);
-                    characterInfo.Show();
-                    return;
-                }
-                counter++;
-            }
-        }
-        public static List<GotCharacters> GetListOfGotCharacters()
-        {
-            return JsonConvert.DeserializeObject<List<GotCharacters>>(Downloader.DataJsonFormat(ConfigurationManager.AppSettings["urlString"]));
+            var selectedCharacterName = charactersListBox.SelectedItem.ToString();
+
+            var selectedCharacter = gotCharacters.FirstOrDefault(c => c.Name == selectedCharacterName);
+
+            Characters characterWindow = new Characters(selectedCharacter);
+            characterWindow.ShowDialog();
         }
 
         private void characterNameTextBoxTextChanged(object sender, TextChangedEventArgs e)
         {
-            if (findCharacterNameTextBox is null)
-            {
-                findCharacterNameTextBox.Text = "";
-            }
-            int index = 0;
-            foreach (var person in gotCharacters)
-            {
-                if (person.Name.Contains(characterNameTextBox.Text))
-                {
-                    charactersListBox.Items[index] = person;
-                }
-                else
-                {
-                    charactersListBox.Items[index] = new EmptySpaces();
-                }
-                index++;
-            }
+            var charactersName = gotCharacters.Select(c => c.Name);
+            var sortedCharacters = charactersName.Where(c => c.ToLower().Contains(findCharacterNameTextBox.Text.ToLower()));
+
+            charactersListBox.ItemsSource = sortedCharacters;
         }
     }
 }
